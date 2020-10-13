@@ -1,10 +1,6 @@
 const puppeteer = require("puppeteer");
 
-const login = require("../login");
-const writeToTxt = require("../writeToTxt");
-
-const url =
-  "https://www.facebook.com/groups/794171057388979/permalink/946220738850676/";
+const login = require("./login");
 
 const element = {
   commentOrReply:
@@ -15,8 +11,8 @@ const element = {
     ".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p",
 };
 
-const crawl = async () => {
-  const browser = await puppeteer.launch({ headless: false });
+const crawl = async (url) => {
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 720 });
 
@@ -58,12 +54,9 @@ const crawl = async () => {
     comments.map((comment) => comment.innerText.trim().replaceAll(" \n ", " "))
   );
 
-  // Write File
-  writeToTxt("data.txt", listComment);
-
-  console.log("Completed");
-
   await browser.close();
+
+  return listComment;
 };
 
 module.exports = crawl;
