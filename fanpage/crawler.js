@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 const login = require("../login");
+const writeToTxt = require("../writeToTxt");
 
 const url = "https://www.facebook.com/xu.ngan.182/posts/135610794196030";
 
@@ -54,14 +55,7 @@ const crawl = async () => {
   );
 
   // Write File
-  try {
-    fs.writeFileSync(
-      path.join("output", "text.txt"),
-      listComment.join("\n\n\n")
-    );
-  } catch (error) {
-    console.log(error);
-  }
+  writeToTxt("data.txt", listComment);
 
   console.log("Completed");
 
