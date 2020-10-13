@@ -106,3 +106,6 @@ dist
 
 # Facebook cookies
 cookies.json
+
+# Output Folder
+output/**

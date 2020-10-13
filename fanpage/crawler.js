@@ -2,6 +2,8 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
 
+const login = require("../login");
+
 const url = "https://www.facebook.com/xu.ngan.182/posts/135610794196030";
 
 const urlLogin = "https://vi-vn.facebook.com/login/";
@@ -20,34 +22,7 @@ const crawl = async () => {
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 720 });
 
-  let cookies;
-  try {
-    cookies = fs.readFileSync("cookies.json");
-    cookies = JSON.parse(cookies);
-    await page.setCookie(...cookies);
-  } catch (error) {
-    console.log(error);
-  }
-
-  await page.goto(urlLogin);
-
-  // Login To Facebook
-  try {
-    await page.type("#email", process.env.EMAIL);
-    await page.type("#pass", process.env.PASS);
-    await page.click("#loginbutton");
-
-    await page.waitForNavigation();
-
-    cookies = await page.cookies();
-
-    fs.writeFile("cookies.json", JSON.stringify(cookies), function (err) {
-      if (err) {
-        return console.log(err);
-      }
-      console.log("The file was saved!");
-    });
-  } catch (error) {}
+  await login(page);
 
   await page.goto(url);
 
