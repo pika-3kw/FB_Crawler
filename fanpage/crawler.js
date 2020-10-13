@@ -1,12 +1,10 @@
 const puppeteer = require("puppeteer");
-const path = require("path");
-const fs = require("fs");
 
 const login = require("../login");
+const writeToTxt = require("../writeToTxt");
 
-const url = "https://www.facebook.com/xu.ngan.182/posts/135610794196030";
-
-const urlLogin = "https://vi-vn.facebook.com/login/";
+const url =
+  "https://www.facebook.com/groups/794171057388979/permalink/946220738850676/";
 
 const element = {
   commentOrReply:
@@ -27,17 +25,24 @@ const crawl = async () => {
   await page.goto(url);
 
   // Show All Reply
+
   const replyElem = element.replyButton;
+
   while (true) {
     try {
       await page.waitForSelector(replyElem, {
         timeout: 5000,
       });
 
-      await page.evaluate(
-        (replyElem) => document.querySelector(replyElem).click(),
-        replyElem
-      );
+      await page.evaluate((replyElem) => {
+        const replyButton = document.querySelector(replyElem);
+        if (replyButton.innerText.includes("Ẩn")) {
+          replyButton.parentNode.removeChild(replyButton);
+          return;
+        }
+
+        return replyButton.click();
+      }, replyElem);
     } catch (e) {
       break;
     }
@@ -54,14 +59,7 @@ const crawl = async () => {
   );
 
   // Write File
-  try {
-    fs.writeFileSync(
-      path.join("output", "text.txt"),
-      listComment.join("\n\n\n")
-    );
-  } catch (error) {
-    console.log(error);
-  }
+  writeToTxt("data.txt", listComment);
 
   console.log("Completed");
 
